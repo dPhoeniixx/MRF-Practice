@@ -25,7 +25,7 @@ public class ImageDownloader {
         downloadUri = uri;
         destFile = new File(CACHE_PATH, Utils.md5(downloadUri.toString()));
         cacheFile = new File(destFile, downloadUri.getLastPathSegment());
-        destFile.mkdir();
+        destFile.mkdirs();
     }
 
     public Bitmap download() {
