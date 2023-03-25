@@ -8,24 +8,24 @@ import com.dphoeniixx.mrfpractice.data.Utils;
 import com.dphoeniixx.mrfpractice.MRFApp;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class ImageDownloader {
 
-    private static Uri downloadUri;
-    private static File cacheFile;
-    private static File destFile;
+    private static String   downloadUri;
+    private static File     destDir;
+    private static String   filename;
+    private static File     cacheFile;
 
-    private static String CACHE_PATH = MRFApp.getContext().getApplicationContext().getCacheDir() + "/image-cache/";
+    private static final String CACHE_PATH = MRFApp.getContext().getApplicationContext().getCacheDir() + "/image-cache/";
 
     public ImageDownloader(Uri uri) {
-        downloadUri = uri;
-        destFile = new File(CACHE_PATH, Utils.md5(downloadUri.toString()));
-        cacheFile = new File(destFile, downloadUri.getLastPathSegment());
-        destFile.mkdir();
+        downloadUri = uri.toString();
+        destDir     = new File(CACHE_PATH, Utils.md5(downloadUri.getBytes(StandardCharsets.UTF_8)));
+        filename    = downloadUri.substring(downloadUri.lastIndexOf('/') + 1);
+        cacheFile   = new File(destDir, filename);
+        destDir.mkdirs();
     }
 
     public Bitmap download() {
@@ -33,7 +33,7 @@ public class ImageDownloader {
             return BitmapFactory.decodeFile(cacheFile.getAbsolutePath());
         }
         try {
-            MRFApp.downloadFile(downloadUri.toString(), destFile);
+            MRFApp.downloadFile(downloadUri, destDir);
             return BitmapFactory.decodeFile(cacheFile.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();

@@ -7,8 +7,8 @@ import android.content.SharedPreferences;
 import com.dphoeniixx.mrfpractice.MRFApp;
 
 public class SessionManager {
-    private static SharedPreferences sharedPreferences = MRFApp.getContext().getSharedPreferences("user", MODE_PRIVATE);
-    private static String TOKEN_NAME = "auth_token";
+    private static final SharedPreferences sharedPreferences = MRFApp.getContext().getSharedPreferences("user", MODE_PRIVATE);
+    private static final String TOKEN_NAME = "auth_token";
 
     public static String getToken() {
         return sharedPreferences.getString(TOKEN_NAME, "");

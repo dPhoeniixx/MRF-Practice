@@ -17,7 +17,7 @@ import com.dphoeniixx.mrfpractice.BlogpostActivity;
 import com.dphoeniixx.mrfpractice.R;
 import com.dphoeniixx.mrfpractice.data.model.Blog;
 import com.google.android.material.imageview.ShapeableImageView;
-import java.io.IOException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,13 +57,10 @@ public class BlogAdapter extends ArrayAdapter<Blog> {
         ImageDownloader imageDownloader = new ImageDownloader(Uri.parse(Blog.getImage()));
         blogImage.setImageBitmap(imageDownloader.download());
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intentBlogpost = new Intent(getContext(), BlogpostActivity.class);
-                intentBlogpost.putExtra(BlogpostActivity.BLOGPOST_ID, Blog.getID());
-                getContext().startActivity(intentBlogpost);
-            }
+        view.setOnClickListener(view1 -> {
+            Intent intentBlogpost = new Intent(getContext(), BlogpostActivity.class);
+            intentBlogpost.putExtra(BlogpostActivity.BLOGPOST_ID, Blog.getID());
+            getContext().startActivity(intentBlogpost);
         });
 
 

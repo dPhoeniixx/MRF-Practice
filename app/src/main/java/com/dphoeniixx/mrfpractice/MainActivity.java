@@ -1,11 +1,5 @@
 package com.dphoeniixx.mrfpractice;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
@@ -14,21 +8,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.ui.AppBarConfiguration;
 
 import com.dphoeniixx.mrfpractice.data.SessionManager;
-import com.dphoeniixx.mrfpractice.databinding.ActivityMainBinding;
 import com.dphoeniixx.mrfpractice.deeplink.DeeplinkHandler;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
-import java.util.List;
 
 public class MainActivity extends FragmentActivity {
     @Override
@@ -44,33 +30,19 @@ public class MainActivity extends FragmentActivity {
         Button blogButton = findViewById(R.id.blogBtn);
         Button profileButton = findViewById(R.id.profileBtn);
 
-        if(SessionManager.getToken() == "") {
+        if(SessionManager.getToken().isEmpty()) {
             profileButton.setText("Login");
         } else {
             profileButton.setText("Profile");
         }
 
-        blogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        blogButton.setOnClickListener(view -> showFragment(new BlogFragment()));
 
-//                Intent in = new Intent(Intent.ACTION_VIEW);
-//                in.setData(Uri.parse("linkedin://profile/dphoeniixx?src=sdk&accessToken=eeeeeeerrrr"));
-//                in.setFlags(0);
-//                startActivityForResult(in, 300);
-
-                showFragment(new BlogFragment());
-            }
-        });
-
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(SessionManager.getToken() == ""){
-                    showFragment(new LoginFragment());
-                }else {
-                    showFragment(new ProfileFragment());
-                }
+        profileButton.setOnClickListener(view -> {
+            if(SessionManager.getToken() == ""){
+                showFragment(new LoginFragment());
+            }else {
+                showFragment(new ProfileFragment());
             }
         });
 
@@ -87,13 +59,6 @@ public class MainActivity extends FragmentActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.flFragment, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
-    }
-
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        try {
-            super.startActivityForResult(intent, requestCode);
-        } catch (Exception ignored){}
     }
 
     @Override

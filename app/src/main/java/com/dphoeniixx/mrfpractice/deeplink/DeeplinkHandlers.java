@@ -34,24 +34,16 @@ public class DeeplinkHandlers {
         API.redeem(redeemCode).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                MRFApp.getCurrentActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MRFApp.getContext(), "Unknown error on redeeming.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                MRFApp.getCurrentActivity().runOnUiThread(() -> Toast.makeText(MRFApp.getContext(), "Unknown error on redeeming.", Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) {
-                    MRFApp.getCurrentActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(response.isSuccessful()){
-                                Toast.makeText(MRFApp.getContext(),"Redeemed.", Toast.LENGTH_SHORT).show();
-                            }else {
-                                Toast.makeText(MRFApp.getContext(), "Unknown error on redeeming.", Toast.LENGTH_SHORT).show();
-                            }
+                    MRFApp.getCurrentActivity().runOnUiThread(() -> {
+                        if(response.isSuccessful()){
+                            Toast.makeText(MRFApp.getContext(),"Redeemed.", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(MRFApp.getContext(), "Unknown error on redeeming.", Toast.LENGTH_SHORT).show();
                         }
                     });
             }

@@ -1,9 +1,5 @@
 package com.dphoeniixx.mrfpractice;
 
-import static android.content.Context.MODE_PRIVATE;
-
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,17 +17,13 @@ import androidx.fragment.app.FragmentTransaction;
 import com.dphoeniixx.mrfpractice.data.SessionManager;
 import com.dphoeniixx.mrfpractice.http.RESTClient;
 import com.dphoeniixx.mrfpractice.http.resposnes.ProfileResponse;
-import com.dphoeniixx.mrfpractice.http.resposnes.RegisterResponse;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
-import retrofit2.Converter;
 
 public class ProfileFragment extends Fragment {
 
@@ -50,50 +41,34 @@ public class ProfileFragment extends Fragment {
         Button logoutButton = getView().findViewById(R.id.logoutButton);
         Button updateButton = getView().findViewById(R.id.updateButton);
 
-        if(SessionManager.getToken() == ""){
+        if(SessionManager.getToken().isEmpty()){
             showFragment(new LoginFragment());
         }
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SessionManager.setToken("");
-                showFragment(new LoginFragment());
-                ((Button)getActivity().findViewById(R.id.profileBtn)).setText("Login");
-            }
+        logoutButton.setOnClickListener(view1 -> {
+            SessionManager.setToken("");
+            showFragment(new LoginFragment());
+            ((Button)getActivity().findViewById(R.id.profileBtn)).setText("Login");
         });
 
-        updateButton.setOnClickListener(new View.OnClickListener() {
+        updateButton.setOnClickListener(v -> API.changeEmail(emailText.getText().toString()).enqueue(new Callback() {
             @Override
-            public void onClick(View v) {
-                API.changeEmail(emailText.getText().toString()).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        MRFApp.getCurrentActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MRFApp.getContext(),"Unknown error on updating email.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
+            public void onFailure(Call call, IOException e) {
+                MRFApp.getCurrentActivity().runOnUiThread(() -> Toast.makeText(MRFApp.getContext(), "Unknown error on updating email.", Toast.LENGTH_SHORT).show());
+            }
 
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        MRFApp.getCurrentActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(response.isSuccessful()){
-                                    Toast.makeText(MRFApp.getContext(),"Email Updated.", Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Toast.makeText(MRFApp.getContext(), "Unknown error on updating email.", Toast.LENGTH_SHORT).show();
-                                }
-                                response.close();
-                            }
-                        });
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                MRFApp.getCurrentActivity().runOnUiThread(() -> {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(MRFApp.getContext(), "Email Updated.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MRFApp.getContext(), "Unknown error on updating email.", Toast.LENGTH_SHORT).show();
                     }
+                    response.close();
                 });
             }
-        });
+        }));
 
         API.getProfile().enqueue(new okhttp3.Callback() {
             @Override

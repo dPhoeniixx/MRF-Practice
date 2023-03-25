@@ -1,9 +1,6 @@
 package com.dphoeniixx.mrfpractice;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,19 +16,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.dphoeniixx.mrfpractice.data.SessionManager;
 import com.dphoeniixx.mrfpractice.http.RESTClient;
-import com.dphoeniixx.mrfpractice.http.resposnes.BlogResponse;
 import com.dphoeniixx.mrfpractice.http.resposnes.LoginResponse;
 import com.dphoeniixx.mrfpractice.http.resposnes.RegisterResponse;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 
 import okhttp3.Callback;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Converter;
-import retrofit2.Response;
 
 
 public class LoginFragment extends Fragment {
@@ -61,62 +52,52 @@ public class LoginFragment extends Fragment {
         Button loginButton = getView().findViewById(R.id.loginActionBtn);
         Button registerButton = getView().findViewById(R.id.registerActionBtn);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-                                           @Override
-                                           public void onClick(View view) {
-                                               API.login(email.getText().toString(), password.getText().toString()).enqueue(new okhttp3.Callback() {
-                                                   @Override
-                                                   public void onFailure(okhttp3.Call call, IOException e) {
-                                                        Log.d("ttt", e.getMessage());
-                                                   }
-
-                                                   @Override
-                                                   public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-                                                       if (response.isSuccessful()) {
-                                                           LoginResponse loginResponse = new Gson().fromJson(response.body().string(), LoginResponse.class);
-                                                           SessionManager.setToken(loginResponse.getData().getToken());
-                                                           Button profileBtn = getActivity().findViewById(R.id.profileBtn);
-                                                           MRFApp.setText(profileBtn, "Profile");
-                                                           showFragment(new ProfileFragment());
-                                                       } else {
-                                                           LoginResponse.Error error = new Gson().fromJson(response.body().string(), LoginResponse.Error.class);
-                                                           MRFApp.setText(message, error.getMessage());
-                                                       }
-                                                   }
-                                               });
-                                           }
-                                       });
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        loginButton.setOnClickListener(view12 -> API.login(email.getText().toString(), password.getText().toString()).enqueue(new Callback() {
             @Override
-            public void onClick(View view) {
-                API.register(name.getText().toString(), email.getText().toString(), password.getText().toString()).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(okhttp3.Call call, IOException e) {
-
-                    }
-
-                    @Override
-                    public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            RegisterResponse registerResponse = new Gson().fromJson(response.body().string(), RegisterResponse.class);
-                            MRFApp.setText(message, registerResponse.getStatus() + "\nTry login now!");
-                        } else {
-                            RegisterResponse.Error error = new Gson().fromJson(response.body().string(), RegisterResponse.Error.class);
-                            String errorString = "";
-                            if (error.getErrors() != null) {
-                                for (RegisterResponse.ValidationError errorVal : error.getErrors()) {
-                                    errorString += errorVal.getMsg() + "\n";
-                                }
-                            } else {
-                                errorString = error.getMessage();
-                            }
-                            MRFApp.setText(message, errorString);
-                        }
-                        response.close();
-                    }
-                });
+            public void onFailure(okhttp3.Call call, IOException e) {
+                 Log.d("ttt", e.getMessage());
             }
-            });
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    LoginResponse loginResponse = new Gson().fromJson(response.body().string(), LoginResponse.class);
+                    SessionManager.setToken(loginResponse.getData().getToken());
+                    Button profileBtn = getActivity().findViewById(R.id.profileBtn);
+                    MRFApp.setText(profileBtn, "Profile");
+                    showFragment(new ProfileFragment());
+                } else {
+                    LoginResponse.Error error = new Gson().fromJson(response.body().string(), LoginResponse.Error.class);
+                    MRFApp.setText(message, error.getMessage());
+                }
+            }
+        }));
+        registerButton.setOnClickListener(view1 -> API.register(name.getText().toString(), email.getText().toString(), password.getText().toString()).enqueue(new Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    RegisterResponse registerResponse = new Gson().fromJson(response.body().string(), RegisterResponse.class);
+                    MRFApp.setText(message, registerResponse.getStatus() + "\nTry login now!");
+                } else {
+                    RegisterResponse.Error error = new Gson().fromJson(response.body().string(), RegisterResponse.Error.class);
+                    String errorString = "";
+                    if (error.getErrors() != null) {
+                        for (RegisterResponse.ValidationError errorVal : error.getErrors()) {
+                            errorString += errorVal.getMsg() + "\n";
+                        }
+                    } else {
+                        errorString = error.getMessage();
+                    }
+                    MRFApp.setText(message, errorString);
+                }
+                response.close();
+            }
+        }));
     }
 
     @Override

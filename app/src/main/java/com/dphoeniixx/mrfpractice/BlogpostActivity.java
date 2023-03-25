@@ -8,7 +8,6 @@ import com.dphoeniixx.mrfpractice.data.ImageDownloader;
 import com.dphoeniixx.mrfpractice.data.model.Blog;
 import com.dphoeniixx.mrfpractice.http.RESTClient;
 import com.dphoeniixx.mrfpractice.http.resposnes.BlogResponse;
-import com.dphoeniixx.mrfpractice.http.resposnes.BlogsResponse;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.gson.Gson;
 
@@ -19,18 +18,12 @@ import androidx.fragment.app.FragmentActivity;
 
 import java.io.IOException;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class BlogpostActivity extends FragmentActivity {
 
 
-    private static RESTClient API = MRFApp.restClient;
+    private static final RESTClient API = MRFApp.restClient;
 
     public static final String BLOGPOST_ID = "blogID";
-
-    private String blogID;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +33,7 @@ public class BlogpostActivity extends FragmentActivity {
 
         Intent intent = getIntent();
 
-        blogID = intent.getStringExtra(BLOGPOST_ID);
+        String blogID = intent.getStringExtra(BLOGPOST_ID);
 
         TextView blogTitle = findViewById(R.id.blogTitle);
         TextView blogText = findViewById(R.id.blogText);
@@ -62,12 +55,9 @@ public class BlogpostActivity extends FragmentActivity {
                 MRFApp.setText(blogTitle, blog.getTitle());
                 MRFApp.setText(blogText, blog.getDescription());
 
-                MRFApp.getCurrentActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ImageDownloader imageDownloader = new ImageDownloader(Uri.parse(blog.getImage()));
-                        blogImage.setImageBitmap(imageDownloader.download());
-                    }
+                MRFApp.getCurrentActivity().runOnUiThread(() -> {
+                    ImageDownloader imageDownloader = new ImageDownloader(Uri.parse(blog.getImage()));
+                    blogImage.setImageBitmap(imageDownloader.download());
                 });
                 response.close();
             }

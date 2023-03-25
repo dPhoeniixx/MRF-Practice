@@ -21,7 +21,7 @@ public class ProfileResponse {
         return data;
     }
 
-    public class Error {
+    public static class Error {
         @SerializedName("status")
         @Expose
         private String status;

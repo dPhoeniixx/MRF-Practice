@@ -1,8 +1,8 @@
 package com.dphoeniixx.mrfpractice.deeplink;
 
 public class DeeplinkEntry {
-    private String entryRegex;
-    private String handlerMethod;
+    private final String entryRegex;
+    private final String handlerMethod;
 
     public DeeplinkEntry(String regex, String handlerMethod) {
         this.entryRegex = regex;

@@ -1,6 +1,5 @@
 package com.dphoeniixx.mrfpractice.http.resposnes;
 
-import com.dphoeniixx.mrfpractice.data.model.User;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -50,7 +49,7 @@ public class RegisterResponse {
         }
     }
 
-    public class ValidationError {
+    public static class ValidationError {
         @SerializedName("value")
         @Expose
         private String value;

@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.dphoeniixx.mrfpractice.data.BlogAdapter;
-import com.dphoeniixx.mrfpractice.http.RESTClient;
 import com.dphoeniixx.mrfpractice.http.resposnes.BlogsResponse;
 import com.google.gson.Gson;
 
@@ -32,14 +31,11 @@ public class BlogFragment extends Fragment {
         MRFApp.restClient.getBlogs().enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                ListView listView = (ListView) getView().findViewById(R.id.blogsListView);
+                ListView listView = getView().findViewById(R.id.blogsListView);
                 BlogsResponse blogsResponse = new Gson().fromJson(response.body().string(), BlogsResponse.class);
-                MRFApp.getCurrentActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        blogAdapter = new BlogAdapter(getContext(), blogsResponse.getData());
-                        listView.setAdapter(blogAdapter);
-                    }
+                MRFApp.getCurrentActivity().runOnUiThread(() -> {
+                    blogAdapter = new BlogAdapter(getContext(), blogsResponse.getData());
+                    listView.setAdapter(blogAdapter);
                 });
                 response.close();
             }

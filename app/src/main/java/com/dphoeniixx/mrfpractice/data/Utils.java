@@ -3,15 +3,15 @@ package com.dphoeniixx.mrfpractice.data;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-final class Utils {
-    public static String md5(final String s) {
+public final class Utils {
+    public static String md5(final byte[] s) {
         final String MD5 = "MD5";
         try {
             // Create MD5 Hash
             MessageDigest digest = java.security.MessageDigest
                     .getInstance(MD5);
-            digest.update(s.getBytes());
-            byte messageDigest[] = digest.digest();
+            digest.update(s);
+            byte[] messageDigest = digest.digest();
 
             // Create Hex String
             StringBuilder hexString = new StringBuilder();

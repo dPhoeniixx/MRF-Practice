@@ -2,12 +2,8 @@ package com.dphoeniixx.mrfpractice;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,17 +16,15 @@ import com.dphoeniixx.mrfpractice.http.RESTClient;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Arrays;
 
 public class MRFApp extends Application implements ContextProvider {
 
     public static RESTClient restClient;
     private static Context context;
     private static Activity currentActivity;
-    private static String[] requiredLibraries = new String[]{"libcrypto.so", "libssl.so"};
+    private static final String[] requiredLibraries = new String[]{"libcrypto.so", "libssl.so"};
 
     @Override
     public Context getActivityContext() {
@@ -70,28 +64,28 @@ public class MRFApp extends Application implements ContextProvider {
         }
 
         for(String library: requiredLibraries){
-            System.load(libDir.toString() + "/" + library);
+            System.load(libDir + "/" + library);
         }
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                MRFApp.this.currentActivity = activity;
+                currentActivity = activity;
             }
 
             @Override
             public void onActivityStarted(Activity activity) {
-                MRFApp.this.currentActivity = activity;
+                currentActivity = activity;
             }
 
             @Override
             public void onActivityResumed(Activity activity) {
-                MRFApp.this.currentActivity = activity;
+                currentActivity = activity;
             }
 
             @Override
             public void onActivityPaused(Activity activity) {
-                MRFApp.this.currentActivity = null;
+                currentActivity = null;
             }
 
             @Override
@@ -123,12 +117,7 @@ public class MRFApp extends Application implements ContextProvider {
     }
 
     public static void setText(final TextView text,final String value){
-        MRFApp.getCurrentActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                text.setText(value);
-            }
-        });
+        MRFApp.getCurrentActivity().runOnUiThread(() -> text.setText(value));
     }
 
     public static void downloadFile(String url, File dest) throws Exception {

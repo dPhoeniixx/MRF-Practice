@@ -12,7 +12,7 @@ public class LoginResponse {
 
     @SerializedName("data")
     @Expose
-    private LoginData data = new LoginData();
+    private final LoginData data = new LoginData();
 
     public String getStatus() {
         return status;
@@ -22,7 +22,7 @@ public class LoginResponse {
         return data;
     }
 
-    public class LoginData {
+    public static class LoginData {
 
         @SerializedName("token")
         @Expose
@@ -41,7 +41,7 @@ public class LoginResponse {
 
     }
 
-    public class Error {
+    public static class Error {
         @SerializedName("status")
         @Expose
         private String status;
